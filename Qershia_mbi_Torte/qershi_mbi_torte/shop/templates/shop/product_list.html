@@ -34,7 +34,6 @@
     color: #c98b87;
   }
 
-    /* Sortimi */
   .sort-container {
     text-align: right;
     margin: 10px 20px 20px 20px;
@@ -53,6 +52,7 @@
     border-color: #c33;
     outline: none;
   }
+
   .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -71,6 +71,28 @@
     flex-direction: column;
     align-items: center;
     text-align: left;
+    position: relative;
+  }
+
+  /* PRODUKTET JO DISPONUESHME (Gri + overlay) */
+  .not-available {
+    opacity: 0.4;
+    filter: grayscale(100%);
+    pointer-events: none;
+  }
+
+  .not-available::after {
+    content: "Nuk është i disponueshëm";
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
   }
 
   .product-card img {
@@ -117,18 +139,17 @@
     transform: scale(1.3);
   }
 
-  /* Efekti i highlight */
-.highlight {
-  animation: highlightFade 3s ease-out;
-  background-color: #fff3cd !important; /* e verdhë e lehtë */
-}
-@keyframes highlightFade {
-  0%   { background-color: #fff3cd; }
-  100% { background-color: transparent; }
-}
+  .highlight {
+    animation: highlightFade 3s ease-out;
+    background-color: #fff3cd !important;
+  }
+  @keyframes highlightFade {
+    0%   { background-color: #fff3cd; }
+    100% { background-color: transparent; }
+  }
 </style>
 
-<!-- Kthehu mbrapsht -->
+<!-- BUTONI KTHEHU MBAPSHT -->
 <div class="nav-left-custom">
   <a href="javascript:history.back()">
     <i class="fa-solid fa-arrow-left"></i> Kthehu mbrapsht
@@ -142,6 +163,7 @@
   </a>
 </div>
 
+<!-- SORTIMI -->
 <div class="sort-container">
   <form method="get" action="">
     <label for="sort_by">Rendit sipas:</label>
@@ -165,30 +187,38 @@
 <div class="product-grid">
   {% if products %}
     {% for product in products %}
-    <div class="product-card" id="product-{{ product.id }}">
-        {% if product.image %}
-          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    <div class="product-card {% if not product.available %}not-available{% endif %}" id="product-{{ product.id }}">
+
+        {% if product.available %}
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="No image">
+            {% endif %}
         {% else %}
-          <img src="{% static 'images/placeholder.png' %}" alt="No image">
+            <img src="{% static 'images/not_available.png' %}" alt="Not available">
         {% endif %}
 
         <h2>{{ product.name }}</h2>
         <p>{{ product.price }} Lekë/copë</p>
 
-        <!-- Shto në shportë: submit klasik -->
+        {% if product.available %}
+        <!-- SHTO NË SHPORTË -->
         <form class="add-to-cart-form" method="post" action="{% url 'add_to_cart' product.id %}">
           {% csrf_token %}
           <button type="submit" class="add-to-cart-button">SHTO NË SHPORTË</button>
         </form>
 
-        <!-- Shto te Favorites: submit klasik -->
+        <!-- FAVORITES -->
         <form method="post" action="{% url 'toggle_favorite' product.id %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="btn-favorite">
             <i class="fa-regular fa-heart"></i> Shto te Favorites
           </button>
         </form>
-      </div>
+        {% endif %}
+
+    </div>
     {% endfor %}
   {% else %}
     <p style="grid-column: 1 / -1; text-align:center; color:#666; font-style:italic;">
@@ -197,7 +227,6 @@
   {% endif %}
 </div>
 
-<!-- Efekti highlight për produktin nëse vjen nga URL me hash -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   const hash = window.location.hash;
