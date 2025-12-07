@@ -12,7 +12,6 @@ class UserProfile(models.Model):
 
 
 
-# Produkti
 class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -27,6 +26,9 @@ class Product(models.Model):
     def remaining_quantity(self):
         return self.available_quantity - self.ordered_quantity
 
+    @property
+    def available(self):
+        return self.remaining_quantity > 0
 
 # Porosia
 class Order(models.Model):
