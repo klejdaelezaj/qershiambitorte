@@ -130,5 +130,5 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Media files (Images uploaded)
-MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'qershi_mbi_torte' / 'shop' / 'media'
+MEDIA_URL = 'https://your-cloud-storage-url/'
