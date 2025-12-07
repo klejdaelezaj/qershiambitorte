@@ -18,17 +18,13 @@
   <p>Get in touch with us instantly through your favorite platform:</p>
 
   <div class="contact-icons">
-    <a href="https://wa.me/{{ whatsapp_number|cut:'+' }}" target="_blank" title="WhatsApp">
-      <i class="fa-brands fa-whatsapp"></i>
-      <span>WhatsApp</span>
-    </a>
-    <a href="{{ instagram_link }}" target="_blank" title="Instagram">
-      <i class="fa-brands fa-instagram"></i>
-      <span>Instagram</span>
-    </a>
-    <a href="tel:{{ phone_number|cut:'+' }}" title="Call Us">
-      <i class="fa-solid fa-phone"></i>
-      <span>Call</span>
+   <a href="{{ tiktok_link }}" target="_blank" title="Tiktok">
+  <i class="fa-brands fa-tiktok"></i>
+  <span>Tiktok</span>
+</a>
+<a href="{{ instagram_link }}" target="_blank" title="Instagram">
+  <i class="fa-brands fa-instagram"></i>
+  <span>Instagram</span>
     </a>
   </div>
 </div>
@@ -40,7 +36,7 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
     overflow: hidden;
-    z-index: -2;
+    z-index: -2; 
   }
 
   .video-background video {
@@ -110,8 +106,9 @@
   }
 
   .contact-icons a[title="WhatsApp"]:hover { color: #25D366; }
-  .contact-icons a[title="Instagram"]:hover { color: #E1306C; }
-  .contact-icons a[title="Call Us"]:hover { color: #ffd700; }
+  .contact-icons a[title="Instagram"]:hover { color: #E1306C; } /* Instagram */
+  .contact-icons a[title="Tiktok"]:hover { color: #ffffff; }   /* TikTok */
+
 </style>
 
 <script>
