@@ -270,3 +270,26 @@ def toggle_favorite(request, product_id):
 def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user).select_related("product")
     return render(request, "shop/favorites.html", {"favorites": favorites})
+    
+from django.core.mail import send_mail
+from django.conf import settings
+
+def send_order_email(order):
+    """
+    order: objekt që përmban informacionin e porosisë
+    """
+    subject = f'Porosi e re: #{order.id}'
+    message = f"""
+    Ka ardhur një porosi e re!
+
+    Klienti: {order.user.username}
+    Totali: {order.total}€
+    Produktet: {', '.join([p.name for p in order.products.all()])}
+    """
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=['qershiaambitortee@gmail.com'],  # vendos email-in e admin
+        fail_silently=False,
+    )
