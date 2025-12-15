@@ -88,7 +88,19 @@ DATABASES = {
     )
 }
 
+if os.environ.get("RENDER") == "true":
+    try:
+        from django.contrib.auth.models import User
 
+        if not User.objects.filter(username="admin").exists():
+            User.objects.create_superuser(
+                username="klejda",
+                password="12345"
+            )
+            print("Superuser created")
+    except Exception as e:
+        print("Superuser not created:", e)
+        
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
