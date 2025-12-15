@@ -203,7 +203,6 @@ def create_order_from_cart(request):
             product=product,
             quantity=item['quantity'],
         )
-
     request.session['cart'] = {}
     return redirect('checkout', order_id=order.id)
 
@@ -244,6 +243,7 @@ def cart_checkout(request):
             price=details['price']
         )
 
+    send_order_email(order)
     return redirect('checkout', order_id=order.id)
 
 
