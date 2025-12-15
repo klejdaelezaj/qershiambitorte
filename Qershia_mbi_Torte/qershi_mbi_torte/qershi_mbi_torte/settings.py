@@ -98,8 +98,8 @@ if os.environ.get("RENDER") == "true":
         if not User.objects.filter(username="klejda").exists():
             User.objects.create_superuser(
                 username="klejda",
-                email="klejda@example.com",  # Email i detyrueshëm
-                password="StrongPassword123!"  # Password i fortë
+                email="klejda_elezaj@yahoo.com",  
+                password="StrongPassword123!" 
             )
             print("Superuser created")
         else:
