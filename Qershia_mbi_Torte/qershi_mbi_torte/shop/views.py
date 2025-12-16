@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 
@@ -44,16 +46,14 @@ def product_list(request):
 
 def contact_us(request):
         context = {
-            'whatsapp_number': '+355699655754',
+            'tiktok_link': 'https://www.tiktok.com/@qershi_mbi_torte?_t=8hlPuDSy8TV&_r=1&fbclid=PAdGRleAOuZrNleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAaeUYd2zREA_aGLRboIHaqUbc0GXv7A6IlhEsENeni_MYGn53Qj7yIcPFuWQhQ_aem_GXfwFwCAofXMT2WEc8XOKw',
             'instagram_link': 'https://www.instagram.com/qershi_mbi_torte/',
-            'phone_number': '+355699655754'
         }
         return render(request, 'shop/contact_us.html', context)
 
 
 def register_view(request):
     if request.method == 'POST':
-        # Merr fushat
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         address = request.POST.get('address')
@@ -97,8 +97,6 @@ def client_login(request):
             messages.error(request, "Invalid username or password.")
 
     return render(request, "shop/login.html")
-
-
 
 def client_logout(request):
     logout(request)
@@ -223,7 +221,7 @@ def checkout(request, order_id):
             order.status = "confirmed"
             order.save()
 
-            send_order_email(order)  # email dërgohet vetëm këtu
+            send_order_email(order) 
             return render(request, "shop/success.html", {"order": order})
 
         else:
@@ -272,9 +270,7 @@ def toggle_favorite(request, product_id):
 def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user).select_related("product")
     return render(request, "shop/favorites.html", {"favorites": favorites})
-    
-from django.core.mail import send_mail
-from django.conf import settings
+
 
 def send_order_email(order):
     items = order.items.all()
