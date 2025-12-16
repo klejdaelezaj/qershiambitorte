@@ -225,6 +225,8 @@ def checkout(request, order_id):
         else:
             messages.error(request, "Ju lutem zgjidhni një mënyrë pagese.")
             return redirect("checkout", order.id)
+            
+    send_order_email(order)
 
     return render(request, "shop/checkout.html", {"order": order})
 
@@ -242,8 +244,6 @@ def cart_checkout(request):
             quantity=details['quantity'],
             price=details['price']
         )
-
-    send_order_email(order)
     return redirect('checkout', order_id=order.id)
 
 
