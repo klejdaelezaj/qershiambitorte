@@ -204,7 +204,6 @@ def create_order_from_cart(request):
     request.session['cart'] = {}
     return redirect('checkout', order_id=order.id)
 
-
 @login_required
 def checkout(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
@@ -217,11 +216,7 @@ def checkout(request, order_id):
             return render(request, "shop/bank_payment.html", {"order": order})
 
         elif payment_method == "cash":
-            order.payment_method = "cash"
-            order.status = "confirmed"
-            order.save()
-
-            send_order_email(order) 
+            # Shfaq faqen e suksesit direkt
             return render(request, "shop/success.html", {"order": order})
 
         else:
@@ -229,7 +224,6 @@ def checkout(request, order_id):
             return redirect("checkout", order.id)
 
     return render(request, "shop/checkout.html", {"order": order})
-
 
 @login_required
 def cart_checkout(request):
@@ -272,46 +266,3 @@ def favorite_list(request):
     return render(request, "shop/favorites.html", {"favorites": favorites})
 
 
-def send_order_email(order):
-    items = order.items.all()
-
-    product_lines = []
-    for item in items:
-        product_lines.append(
-            f"- {item.product.name} x {item.quantity} = {item.subtotal()} ALL"
-        )
-
-    subject = f"Porosi e re #{order.id}"
-    message = f"""
-Ka ardhur një porosi e re!
-
-Klienti: {order.user.username}
-Email: {order.user.email}
-
-Produkte:
-{chr(10).join(product_lines)}
-
-Totali: {order.total_price()} ALL
-Mënyra e pagesës: {order.get_payment_method_display()}
-"""
-
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        ['qershiaambitortee@gmail.com'],
-        fail_silently=False,
-    )
-    
-from django.core.mail import send_mail
-from django.conf import settings
-
-def test_email(request):
-    send_mail(
-        'TEST SMTP',
-        'Ky është një test nga Django',
-        settings.DEFAULT_FROM_EMAIL,
-        ['qershiaambitortee@gmail.com'],
-        fail_silently=False,
-    )
-    return HttpResponse("Email u dërgua")
