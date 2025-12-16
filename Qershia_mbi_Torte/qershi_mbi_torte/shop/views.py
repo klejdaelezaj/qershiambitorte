@@ -275,29 +275,26 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 def send_order_email(order):
-    items = OrderItem.objects.filter(order=order)
+    items = order.items.all()
 
     product_lines = []
-    total = 0
-
     for item in items:
-        line_total = item.price * item.quantity
-        total += line_total
         product_lines.append(
-            f"- {item.product.name} x {item.quantity}"
+            f"- {item.product.name} x {item.quantity} = {item.subtotal()} ALL"
         )
 
     subject = f"Porosi e re #{order.id}"
     message = f"""
 Ka ardhur një porosi e re!
 
-Klienti: {order.customer.username}
-Email: {order.customer.email}
+Klienti: {order.user.username}
+Email: {order.user.email}
 
 Produkte:
 {chr(10).join(product_lines)}
 
-Totali: {total} ALL
+Totali: {order.total_price()} ALL
+Mënyra e pagesës: {order.get_payment_method_display()}
 """
 
     send_mail(
