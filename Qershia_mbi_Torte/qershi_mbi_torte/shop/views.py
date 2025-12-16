@@ -219,14 +219,16 @@ def checkout(request, order_id):
             return render(request, "shop/bank_payment.html", {"order": order})
 
         elif payment_method == "cash":
-            # Shfaq faqen e suksesit direkt
+            order.payment_method = "cash"
+            order.status = "confirmed"
+            order.save()
+
+            send_order_email(order)  # email dërgohet vetëm këtu
             return render(request, "shop/success.html", {"order": order})
 
         else:
             messages.error(request, "Ju lutem zgjidhni një mënyrë pagese.")
             return redirect("checkout", order.id)
-            
-    send_order_email(order)
 
     return render(request, "shop/checkout.html", {"order": order})
 
