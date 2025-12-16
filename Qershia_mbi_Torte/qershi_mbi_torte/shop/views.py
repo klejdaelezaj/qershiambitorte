@@ -302,3 +302,16 @@ Mënyra e pagesës: {order.get_payment_method_display()}
         ['qershiaambitortee@gmail.com'],
         fail_silently=False,
     )
+    
+from django.core.mail import send_mail
+from django.conf import settings
+
+def test_email(request):
+    send_mail(
+        'TEST SMTP',
+        'Ky është një test nga Django',
+        settings.DEFAULT_FROM_EMAIL,
+        ['qershiaambitortee@gmail.com'],
+        fail_silently=False,
+    )
+    return HttpResponse("Email u dërgua")
