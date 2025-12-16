@@ -275,21 +275,35 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 def send_order_email(order):
-    """
-    order: objekt që përmban informacionin e porosisë
-    """
-    subject = f'Porosi e re: #{order.id}'
-    message = f"""
-    Ka ardhur një porosi e re!
+    items = OrderItem.objects.filter(order=order)
 
-    Klienti: {order.user.username}
-    Totali: {order.total}€
-    Produktet: {', '.join([p.name for p in order.products.all()])}
-    """
+    product_lines = []
+    total = 0
+
+    for item in items:
+        line_total = item.price * item.quantity
+        total += line_total
+        product_lines.append(
+            f"- {item.product.name} x {item.quantity}"
+        )
+
+    subject = f"Porosi e re #{order.id}"
+    message = f"""
+Ka ardhur një porosi e re!
+
+Klienti: {order.customer.username}
+Email: {order.customer.email}
+
+Produkte:
+{chr(10).join(product_lines)}
+
+Totali: {total} ALL
+"""
+
     send_mail(
-        subject=subject,
-        message=message,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=['qershiaambitortee@gmail.com'],  # vendos email-in e admin
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        ['qershiaambitortee@gmail.com'],
         fail_silently=False,
     )
