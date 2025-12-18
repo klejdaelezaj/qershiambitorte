@@ -21,6 +21,7 @@ urlpatterns = [
     path("favorites/", views.favorite_list, name="favorite_list"),
     path("favorites/toggle/<int:product_id>/", views.toggle_favorite, name="toggle_favorite"),
     path('make_order/', views.create_order_from_cart, name='make_order'),
+    path("test-email/", views.test_email_view),
 
 ]
 
