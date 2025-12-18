@@ -271,9 +271,10 @@ def favorite_list(request):
     return render(request, "shop/favorites.html", {"favorites": favorites})
     
 def send_admin_order_email(order):
-    subject = f"Porosi e re #{order.id}"
-    
-    message = f"""
+    try:
+        subject = f"Porosi e re #{order.id}"
+
+        message = f"""
 Është krijuar një porosi e re.
 
 Klienti:
@@ -283,16 +284,16 @@ Username: {order.user.username}
 Detajet e porosisë:
 """
 
-    for item in order.items.all():
-        message += f"- {item.product.name} x {item.quantity}\n"
+        for item in order.orderitem_set.all():
+            message += f"- {item.product.name} x {item.quantity}\n"
 
-    message += f"\nStatusi: {order.status}"
-
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [settings.EMAIL_HOST_USER],  # email i adminit
-        fail_silently=False,
-    )
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.EMAIL_HOST_USER],
+            fail_silently=False,
+        )
+    except Exception as e:
+        print("EMAIL ERROR:", e)
 
