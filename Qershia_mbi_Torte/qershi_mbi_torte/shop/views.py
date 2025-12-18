@@ -211,12 +211,17 @@ def checkout(request, order_id):
     if request.method == "POST":
         payment_method = request.POST.get("payment_method")
 
+        # ndrysho statusin
+        order.status = "confirmed"
+        order.save()
+
+        # DËRGO EMAIL TE ADMINI
+        send_admin_order_email(order)
+
         if payment_method == "bank":
-            # Shfaq faqen e bankës
             return render(request, "shop/bank_payment.html", {"order": order})
 
         elif payment_method == "cash":
-            # Shfaq faqen e suksesit direkt
             return render(request, "shop/success.html", {"order": order})
 
         else:
