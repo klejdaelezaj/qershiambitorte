@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import HttpResponse
 
 
 
@@ -296,4 +297,18 @@ Detajet e porosisë:
         )
     except Exception as e:
         print("EMAIL ERROR:", e)
+
+
+def test_email_view(request):
+    try:
+        send_mail(
+            "TEST EMAIL NGA DJANGO",
+            "Nëse ky email vjen, email-i funksionon.",
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.EMAIL_HOST_USER],
+            fail_silently=False,
+        )
+        return HttpResponse("EMAIL SENT SUCCESSFULLY")
+    except Exception as e:
+        return HttpResponse(f"EMAIL ERROR: {e}")
 
