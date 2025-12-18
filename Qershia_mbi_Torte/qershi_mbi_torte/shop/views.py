@@ -229,7 +229,7 @@ def checkout(request, order_id):
 def cart_checkout(request):
     cart_items = request.session.get('cart', {})
     if not cart_items:
-        return redirect('cart')  # shporta bosh
+        return redirect('cart')
     order = Order.objects.create(customer=request.user, status='pending')
     for item_id, details in cart_items.items():
         OrderItem.objects.create(
@@ -264,5 +264,30 @@ def toggle_favorite(request, product_id):
 def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user).select_related("product")
     return render(request, "shop/favorites.html", {"favorites": favorites})
+    
+def send_admin_order_email(order):
+    subject = f"Porosi e re #{order.id}"
+    
+    message = f"""
+Është krijuar një porosi e re.
 
+Klienti:
+{order.user.first_name} {order.user.last_name}
+Username: {order.user.username}
+
+Detajet e porosisë:
+"""
+
+    for item in order.items.all():
+        message += f"- {item.product.name} x {item.quantity}\n"
+
+    message += f"\nStatusi: {order.status}"
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [settings.EMAIL_HOST_USER],  # email i adminit
+        fail_silently=False,
+    )
 
