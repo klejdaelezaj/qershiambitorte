@@ -88,30 +88,6 @@ DATABASES = {
     )
 }
 
-import django
-
-if os.environ.get("RENDER") == "true":
-    try:
-        django.setup()  # Siguro që Django është i inicializuar
-        from django.contrib.auth.models import User
-
-        if not User.objects.filter(username="klejda").exists():
-            User.objects.create_superuser(
-                username="klejda",
-                email="klejda_elezaj@yahoo.com",  
-                password="StrongPassword123!" 
-            )
-            print("Superuser created")
-        else:
-            # Siguro që user ekzistues ka staff dhe superuser
-            user = User.objects.get(username="klejda")
-            if not user.is_staff or not user.is_superuser:
-                user.is_staff = True
-                user.is_superuser = True
-                user.save()
-                print("User updated to staff and superuser")
-    except Exception as e:
-        print("Superuser not created:", e)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
